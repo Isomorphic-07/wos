@@ -3,6 +3,10 @@ import clip
 import openai
 from PIL import Image
 from sentence_transformers import SentenceTransformer, util
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class GPT_ImageQuizWrapper:
     def __init__(self, gpt_model, image_processor):
@@ -143,15 +147,16 @@ class GPTModel:
         Returns:
             str: Generated quiz question.
         """
-        #Passed through my presious code through cat, not sure if a try catch is necessary
-        #Also please change prompt if needed, I can't remember what format the quiz is supposed to be in
         try:
-            response = openai.Completion.create(
-                engine="text-davinci-003",  
-                prompt=f"Create a multiple-choice quiz question based on this description: {prompt}\nProvide four answer options.",
+            response = openai.chat_completions.create(
+                model="gpt-4`-turbo",  # Specify the GPT model
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": f"Create a multiple-choice quiz question based on this description: {prompt}\nProvide four answer options."}
+                ],
                 max_tokens=100
             )
-            return response.choices[0].text.strip()
+            return response['choices'][0]['message']['content'].strip()
         except Exception as e:
             print(f"Error generating question: {e}")
             return "Question generation failed."
@@ -188,13 +193,13 @@ if __name__ == "__main__":
     # Initialize the ImageProcessor and GPTModel
     image_processor = ImageProcessor()
     #We need api key I think, not sure what it would be...
-    gpt_model = GPTModel(api_key="openai_api_key_here")
+    gpt_model = GPTModel(api_key=os.getenv('GPT_API_KEY'))
 
     # Initialize the GPT_ImageQuizWrapper
     quiz_wrapper = GPT_ImageQuizWrapper(gpt_model=gpt_model, image_processor=image_processor)
 
     # Add some random image paths
-    image_paths = ["image1.jpg", "image2.jpg", "image3.jpg"]
+    image_paths = ["./images/image1.jpeg", "./images/image2.jpeg", "./images/image3.jpeg"]
     quiz_wrapper.add_images(image_paths)
 
     # Generate quiz questions
