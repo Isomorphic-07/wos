@@ -1,12 +1,22 @@
 import torch
 import clip
-import openai
+from openai import OpenAI
 from PIL import Image
 from sentence_transformers import SentenceTransformer, util
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
+client = OpenAI(api_key=os.getenv('GPT_API_KEY'))
+
+def get_question_prompt(description: str):
+    return f"Generate a quiz question based on this image description: {description}"
+
+def get_gpt_agent(prompt: str):
+    return  [{"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": f"Create a multiple-choice quiz question based on this description: {prompt}\nProvide four answer options."}]
+
+
 
 class GPT_ImageQuizWrapper:
     def __init__(self, gpt_model, image_processor):
@@ -33,7 +43,7 @@ class GPT_ImageQuizWrapper:
         """
         for image in images:
             description = self.image_processor.analyze_image(image)
-            if description:  #This just checks whether our description is empty or not
+            if description:
                 self.images.append(image)
                 self.image_descriptions.append(description)
             else:
@@ -48,7 +58,7 @@ class GPT_ImageQuizWrapper:
         """
         self.quiz_questions = []
         for description in self.image_descriptions:
-            question_prompt = f"Generate a quiz question based on this image description: {description}"
+            question_prompt = get_question_prompt(description)
             question = self.gpt_model.generate_question(question_prompt)
             if question:
                 self.quiz_questions.append(question)
@@ -75,6 +85,9 @@ class GPT_ImageQuizWrapper:
         matched_images = []
         for answer in self.user_answers:
             for idx, description in enumerate(self.image_descriptions):
+                print(description)
+                print(answer)
+                print("--------------")
                 if self.gpt_model.match_answer_to_description(answer, description):
                     matched_images.append(self.images[idx])
                     break
@@ -101,8 +114,7 @@ class ImageProcessor:
             image = Image.open(image_path).convert("RGB")
             image_input = self.preprocess(image).unsqueeze(0).to("cpu")
 
-            # Predefined set of text prompts (pls expand, we probably would need more, or we can do dynamic 
-            # prompt generation, but honestly we want it to be simple right???
+            # Predefined set of text prompts (you can add more prompts if needed)
             text_prompts = [
                 "a dog", "a cat", "a sunset", "a beach",
                 "a mountain", "a cityscape", "a forest",
@@ -133,7 +145,6 @@ class ImageProcessor:
 
 class GPTModel:
     def __init__(self, api_key):
-        openai.api_key = api_key
         # Initialize the sentence transformer model for semantic similarity
         self.similarity_model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -148,21 +159,15 @@ class GPTModel:
             str: Generated quiz question.
         """
         try:
-            response = openai.chat_completions.create(
-                model="gpt-4`-turbo",  # Specify the GPT model
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": f"Create a multiple-choice quiz question based on this description: {prompt}\nProvide four answer options."}
-                ],
-                max_tokens=100
-            )
-            return response['choices'][0]['message']['content'].strip()
+            response = client.chat.completions.create(model="gpt-4-turbo",
+            messages=get_gpt_agent(prompt),
+            max_tokens=100)
+            return response.choices[0].message.content.strip()
         except Exception as e:
             print(f"Error generating question: {e}")
             return "Question generation failed."
 
     def match_answer_to_description(self, answer, description, threshold=0.7):
-        # Btw, I've just set a random threshold, change it if you guys want...
         """
         Uses semantic similarity to match user's answer to image description.
 
@@ -188,17 +193,16 @@ class GPTModel:
             print(f"Error matching answer to description: {e}")
             return False
 
-# I think this would be how it can be used
+
 if __name__ == "__main__":
     # Initialize the ImageProcessor and GPTModel
     image_processor = ImageProcessor()
-    #We need api key I think, not sure what it would be...
     gpt_model = GPTModel(api_key=os.getenv('GPT_API_KEY'))
 
     # Initialize the GPT_ImageQuizWrapper
     quiz_wrapper = GPT_ImageQuizWrapper(gpt_model=gpt_model, image_processor=image_processor)
 
-    # Add some random image paths
+    # Add some image paths
     image_paths = ["./images/image1.jpeg", "./images/image2.jpeg", "./images/image3.jpeg"]
     quiz_wrapper.add_images(image_paths)
 
@@ -208,7 +212,7 @@ if __name__ == "__main__":
     for idx, question in enumerate(questions, 1):
         print(f"{idx}. {question}")
 
-    # Simulate user answers (Got chat to give me some prompts), we will get user answers
+    # Simulate user answers
     user_answers = [
         "A beautiful sunset over the ocean.",
         "A playful dog running on the beach.",
@@ -221,5 +225,3 @@ if __name__ == "__main__":
     print("\nMatched Images:")
     for image in matched_images:
         print(image)
-    #Hope this works but not sure lol
-
