@@ -1,0 +1,227 @@
+/* General Styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('./images/background.png'); /* Add the image path here */
+  background-size: cover; /* Ensure the image covers the whole background */
+  background-position: center; /* Center the image */
+  color: #fff; /* White text */
+  margin: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+header {
+  width: 100%;
+  padding: 15px 30px;
+  background-color: #000; /* Pure black for header */
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+
+.logo {
+  font-size: 2em;
+  font-weight: bold;
+  color: white; /* Bright yellow accent */
+  text-transform: uppercase;
+}
+
+.nav a {
+  text-decoration: none;
+  margin-left: 20px;
+  font-size: 1em;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.premium-btn {
+  background-color: black; /* Bright pink */
+  color: white;
+  font-weight: 600;
+}
+
+.dropdown-btn {
+  background-color: white; /* Bright blue */
+  color: black;
+}
+
+.signin-btn {
+  background-color: white; /* Bright green */
+  color: black;
+}
+
+.nav a:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.hero h1 {
+  font-size: 3em;
+  color: #ffea00; /* Bright yellow for headings */
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2em;
+  color: #ddd; /* Light grey for text */
+  max-width: 650px;
+  margin: 0 auto 40px auto;
+  line-height: 1.6;
+}
+
+/* Upload Section */
+.upload-section-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 40px;
+  padding: 20px;
+  max-width: 1000px;
+  width: 200%;
+  gap: 20px;
+}
+
+.upload-text {
+  flex: 1;
+  text-align: right;
+  padding-right: 20px;
+  max-width: 400px;
+}
+
+.upload-text h1 {
+  font-size: 2.5em;
+  color: white  ; /* Bright yellow for emphasis */
+  margin: 0;
+}
+
+.upload-text p {
+  font-size: 1.2em;
+  color: #ddd; /* Light grey */
+  line-height: 1.6;
+}
+
+.upload-box {
+  flex: 1;
+  padding: 20px 50px;
+  text-align: left;
+  background-color: #222; /* Darker background for the box */
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  max-width: 400px;
+  width: 100%;
+}
+
+.upload-box input[type="file"] {
+  display: block;
+  margin: 20px 0;
+  font-size: 1em;
+  padding: 10px;
+  border: 2px dashed white; /* Bright yellow border */
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #333; /* Dark grey background */
+  color: #fff;
+  width: 100%;
+}
+
+.upload-box button {
+  padding: 12px 30px;
+  background-color: white; /* Bright blue button */
+  color: black;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.upload-box button:hover {
+  background-color: white;
+  transform: translateY(-2px);
+}
+
+/* Result Section */
+.result-section {
+  margin-top: 60px;
+  text-align: center;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.result-section h2 {
+  font-size: 2em;
+  color: white; /* Bright yellow for titles */
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+.images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.images-grid img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.images-grid img:hover {
+  transform: scale(1.05);
+}
+
+/* Expanded Section for Related Images */
+.expanded-section {
+  margin-top: 50px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+  background-color: #222; /* Dark background for contrast */
+}
+
+.expanded-section .expanded-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.expanded-section img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+  transition: transform 0.3s ease;
+}
+
+.expanded-section img:hover {
+  transform: scale(1.05);
+}
+
+/* Utility class */
+.hidden {
+  display: none;
+}

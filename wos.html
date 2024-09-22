@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XIYR</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">XIYR</div>
+        <nav class="nav">
+            <a href="#" class="premium-btn">Premium</a>
+            <a href="#" class="dropdown-btn">Services</a>
+            <a href="#" class="signin-btn">Sign In</a>
+        </nav>
+    </header>
+
+    <section class="upload-section-container">
+        <div class="upload-text">
+            <h1>Upload Your Photos</h1>
+            <p>Upload your library of photos and let our smart selection tool recommend the best photos for you to post.</p>
+        </div>
+        <div class="upload-box">
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input type="file" id="imageUpload" accept="image/*" multiple required>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </section>
+    
+
+    <section class="result-section">
+        <h2>Best Photos to Post</h2>
+        <div class="images-grid">
+            <!-- Main images -->
+            <img src="./images/image2.jpg" alt="Best Photo 1" class="clickable-image" data-image="1">
+            <img src="./images/image1.jpg" alt="Best Photo 2" class="clickable-image" data-image="2">
+            <img src="./images/image3.jpg" alt="Best Photo 3" class="clickable-image" data-image="3">
+        </div>
+
+        <!-- Expanded images that will show when clicking a main image -->
+        <div id="expanded-section" class="expanded-section hidden">
+            <h3>More Photos</h3>
+            <div class="expanded-images-grid" id="expanded-images-grid">
+                <!-- Placeholder for expanded images -->
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const images = document.querySelectorAll('.clickable-image');
+        const expandedSection = document.getElementById('expanded-section');
+        const expandedImagesGrid = document.getElementById('expanded-images-grid');
+
+        const relatedImages = {
+            1: ['./images/image2.jpg', './images/image2.jpg', './images/image2.jpg', './images/image2.jpg', './images/image2.jpg'],
+            2: ['./images/image1.jpg', './images/image1.jpg', './images/image1.jpg', './images/image1.jpg', './images/image1.jpg'],
+            3: ['./images/image3.jpg', './images/image3.jpg', './images/image3.jpg', './images/image3.jpg', './images/image3.jpg'],
+        };
+
+        images.forEach(image => {
+            image.addEventListener('click', () => {
+                const imageId = image.getAttribute('data-image');
+                expandedImagesGrid.innerHTML = ''; // Clear previous expanded images
+
+                // Populate expanded section with new related images
+                relatedImages[imageId].forEach(imageSrc => {
+                    const img = document.createElement('img');
+                    img.src = imageSrc;
+                    img.alt = 'Expanded Image';
+                    expandedImagesGrid.appendChild(img);
+                });
+
+                // Show the expanded section
+                expandedSection.classList.remove('hidden');
+                expandedSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+
+</body>
+</html>
